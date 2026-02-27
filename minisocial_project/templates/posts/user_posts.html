@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark mb-4">
+        <div class="col-md-6 px-0">
+            <h1 class="display-4 font-italic">Профиль: {{ profile_user.username }}</h1>
+            <p class="lead my-3">Всего постов: {{ posts.count }}</p>
+        </div>
+    </div>
+
+    <h3 class="mb-4">Публикации автора:</h3>
+    
+    {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></h5>
+                <p class="card-text">{{ post.text|truncatewords:20 }}</p>
+                <small class="text-muted">{{ post.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+        </div>
+    {% empty %}
+        <p>Этот пользователь еще ничего не опубликовал.</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{% if post.author == user %}
+    <div class="mt-3">
+        <a href="{% url 'edit_post' post.id %}" class="btn btn-outline-secondary btn-sm">Редактировать</a>
+        <a href="{% url 'delete_post' post.id %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+    </div>
+{% endif %}
