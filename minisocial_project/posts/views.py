@@ -1,11 +1,16 @@
 from tokenize import Comment
 
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render
 from .models import Post
 from django.shortcuts import redirect
 from .models import Comment
 from django.contrib.auth.decorators import login_required   
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+
+
 
 def post_list(request):
     posts = Post.objects.all().order_by('-created_at')
@@ -15,7 +20,6 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comments = post.comments.all()
     return render(request, 'posts/post_detail.html', {'post': post, 'comments': comments})
-
 
 def add_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -37,7 +41,7 @@ def create_post(request):
         text = request.POST.get('content')
         if title and text:
             Post.objects.create(title=title, text=text, author=request.user)
-            return redirect('post_list')
+            return redirect('post_list', post_id=Post.objects.last().id)
     return render(request, 'posts/create_post.html')
 
 @login_required
@@ -64,3 +68,16 @@ def delete_post(request, post_id):
         post.delete()
         return redirect('post_list')
     return render(request, 'posts/delete_post.html', {'post': post})
+
+
+def post_create(request):
+    if request.method == 'POST':
+        text = request.POST.get('text')
+
+        if not text:
+            return HttpResponse(f'Post cannot be empty', status=400)
+
+        new_post = 99
+
+        return redirect(f'post_detail', post_id=new_post)
+    return render(request, 'posts/create_post.html')

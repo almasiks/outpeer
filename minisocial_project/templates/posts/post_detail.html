@@ -4,3 +4,7 @@
         <a href="{% url 'delete_post' post.id %}" class="btn btn-outline-danger btn-sm">Удалить</a>
     </div>
 {% endif %}
+
+{% for comment in comments %}
+    <p>{{ comment.text }}</p>
+{% endfor %}
