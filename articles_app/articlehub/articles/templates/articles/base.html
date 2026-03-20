@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Article hub{% endblock %}</title>
+    <link href=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        body{
+            font-family: Georgia, "Times New Roman", serif;
+            background-color: #ffffff;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 30px;
+        }
+        .content{
+            max-width: 720px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-light border-bottom mb-4">
+        <div class="container content">
+            <a href="{% url 'article_list' %}" class="navbar-brand">Artclehub</a>
+    <a class="btn btn-dark" href="{% url 'article_create' %}">
+        Создать статью
+    </a>
+    </div>
+    </nav>
+    <main class="container content">
+    {% block content %}{% endblock %}
+    </main>
+</body>
+
+</html>

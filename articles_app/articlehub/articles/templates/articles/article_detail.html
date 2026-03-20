@@ -1,0 +1,11 @@
+ {% extends 'articles/base.html' %}
+ {% block title %}Статья-{{ article.id }}{% endblock %}
+{% block content %}
+
+    <h1>{{ article.title }}</h1><a href="{% url 'article_edit' article.pk%}"> Редактивировать</a>
+    <a href="{% url 'article_delete' article.pk%}">Удалить</a>
+    <div class="fs-5 ls-lg">
+        {{ article.content }}
+    </div>
+
+{% endblock %}

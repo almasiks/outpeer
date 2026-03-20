@@ -1,26 +1,41 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Adding article</title>
-</head>
-<body>
- <form method="POST">
-     {% csrf_token %}
-     <label>
-         Заголовок
-         <input type="text" name="title">
-     </label>
-     <br><br>
-     <label>
-         Текст статьи:
-         <textarea name="content" ></textarea>
-     </label>
-     <br><br>
-     <button type="submit">Отправить</button>
- </form>
-</body>
-</html>
+{% extends 'articles/base.html' %}
+{% block title %}Создание статьи{% endblock %}
+{% block content %}
+
+    <h1>Новая статья</h1>
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+    <form method="post">
+
+    {% csrf_token %}
+    {% if not authors %}
+    	 <div class="mb-3">
+        <label class="form-labal">Автор</label>
+        <select class="form-select" id="author" name="author">
+        {% for author in authors %}
+            <option value="{{ author.id }}">{{ author.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    {% endif %} 
+
+
+
+    <div class="mb-3">
+        <label class="form-labal">Заголовок статьи</label>
+        <input type="text" name="title" class="form-control" value="{% if article.title %}{{ article.title }}{% endif %}">
+    </div>
+       <div class="mb-3">
+        <label class="form-labal">Контент</label>
+           <textarea name="content" rows="6" class="form-control">{% if article %}{{ article.content }}{% endif %}</textarea>
+    </div>
+
+    <button class="btn btn-dark">
+        Опубликовать
+    </button>
+
+    </form>
+{% endblock %}

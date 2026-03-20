@@ -1,23 +1,22 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    переход был из main {{ search_query }}
-    <header>
-        <h1>Platform of articles</h1>
-    </header>
-<main>
-    <h2>List of articles</h2>
-    <p>Here will be displayed articles</p>
-</main>
-<footer>
-    <p>&copy; 2026 ArticleHub</p>
-</footer>
-</body>
-</html>
+{% extends 'articles/base.html' %}
+{% block title %}Article - HUB{% endblock %}
+{% block content %}
+    <h1>Последние Статьи</h1>
+
+    {% if articles %}
+
+    {% for article in articles %}
+            <div class="md-4 pb-4 border-bottom">
+                <h2 class="h4">{{ article.title }}</h2>
+                <p class="text-muted">
+                    {{ article.content|truncatechars:150}}
+                </p>
+            <a href="{% url 'article_detail' article.id %}" class="text-decoration-none">
+                Читать больше->
+            </a>
+        </div>
+    {% endfor %}
+        {% else %}
+        <p class="text-muted"> Статей пока нет</p>
+    {% endif %}
+{% endblock %}

@@ -1,45 +1,68 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Article, Author
 
-from articles.apps import ArticlesConfig
-
-
-def articles_list(request):
-    seacrh_query  = request.GET.get('seacrh')
-    context = {
-        'seacrh_query': seacrh_query,
-    }
-
-    return render(request, 'articles/article_list.html', context)
-
-
-def article_detail(request, article_id):
-    if article_id == 1:
-         return HttpResponse(f'Это страница статьи с id: {article_id}')
-    return Http404(f'статья с Id {article_id}')
-
-
-
-def author_detail(request, author_id):
-    seacrh_query = request.GET.get('seacrh')
-    context = {
-        'seacrh_query': seacrh_query,
-    }
-    if author_id == 1:
-        return HttpResponse(f'Это страница автора с id: {author_id}')
-
-    raise Http404
 def article_create(request):
-    request_post = request.POST
+    authors = Author.objects.all()
+    context = {'authors': authors}
 
     if request.method == 'POST':
-        title = request_post.get('title')
-        content = request_post.get('content')
-        return HttpResponse(f"Получена статья: {title}")
-
-    return render(request, 'articles/article_create.html')
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        author_id = request.POST.get('author')
 
 
+        if not title or not content or not author_id:
+            return render(request, 'articles/article_create.html', context = {
+                'error':'ALL fields must be filled!',
+                'authors': authors,
+            })
+
+        # Создаем статью
+        Article.objects.create(
+            title=title,
+            content=content,
+            author_id=author_id
+        )
+
+        return redirect('article_list')
+
+    return render(request, 'articles/article_create.html', context = {'authors' : authors})
+
+def article_list(request):
+    articles = Article.objects.all()
+    return render(request, 'articles/article_list.html', context = {'articles' : articles})
+
+
+def article_detail(request, pk):
+    article = get_object_or_404(Article, id = pk)
+    return render(request, 'articles/article_detail.html', context={'article':article})
+
+
+def article_edit(request, pk):
+    article = get_object_or_404(Article, id=pk)
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        author_id = request.POST.get('author')
+
+        if not title:
+            return render(request, 'articles/article_create.html', context={
+                'error': 'ALL fields must be filled!',
+                'article': article,
+            })
+        article.title = title
+        article.content = content
+        article.save()
+
+        return redirect('article_detail', pk)
+    return render(request, 'articles/article_create.html', context={'article': article})
+
+
+def article_delete(request, pk):
+    article = get_object_or_404(Article, id=pk)
+    if request.method == 'POST':
+        article.delete()
+
+        return redirect('article_list')
+
+    return render(request, 'articles/articles_confirm_delete.html', context={'article': article})
