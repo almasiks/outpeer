@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MiniSocial{% endblock %}</title>
+<style>
+    body{
+        font-family: sans-serif;
+        margin: 40px;
+        background: #f4f4f4;
+    }
+    .container{ background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        nav { margin-bottom: 20px; }
+        .post { border-bottom: 1px solid #eee; padding: 10px 0; }
+        .error { color: red; }
+</style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="{% url 'post_list' %}">Главная</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'create_post' %}">Создать Пост | Привет <b>{{ user.username }}</b></a>
+                {% else %}
+                <a href="/admin/">Войти</a>
+            {% endif %}
+        </nav>
+        <hr>
+    {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
