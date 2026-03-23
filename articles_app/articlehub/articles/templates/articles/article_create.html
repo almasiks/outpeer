@@ -1,41 +1,47 @@
 {% extends 'articles/base.html' %}
 {% block title %}Создание статьи{% endblock %}
+
 {% block content %}
-
     <h1>Новая статья</h1>
+
     {% if error %}
-        <div class="alert alert-danger">
-            {{ error }}
-        </div>
+        <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
+
     <form method="post">
+        {% csrf_token %}
 
-    {% csrf_token %}
-    {% if not authors %}
-    	 <div class="mb-3">
-        <label class="form-labal">Автор</label>
-        <select class="form-select" id="author" name="author">
-        {% for author in authors %}
-            <option value="{{ author.id }}">{{ author.name }}</option>
-        {% endfor %}
-        </select>
-    </div>
-    {% endif %} 
+        {# 1. Исправленное условие для авторов #}
+        {% if authors %}
+        <div class="mb-3">
+            <label class="form-label">Автор</label>
+            <select class="form-select" id="author" name="author">
+                {% for author in authors %}
+                    <option value="{{ author.id }}">{{ author.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% else %}
+            <p class="text-muted">Авторы не найдены в базе данных.</p>
+        {% endif %}
 
+        <div class="mb-3">
+            <label class="form-label">Заголовок статьи</label>
+            <input type="text" name="title" class="form-control" value="{{ article.title|default:'' }}">
+        </div>
 
+        {# 2. Добавляем поле для slug (из-за него была ошибка БД) #}
+        <div class="mb-3">
+            <label class="form-label">URL-адрес (Slug)</label>
+            <input type="text" name="slug" class="form-control" placeholder="example-title" value="{{ article.slug|default:'' }}">
+        </div>
 
-    <div class="mb-3">
-        <label class="form-labal">Заголовок статьи</label>
-        <input type="text" name="title" class="form-control" value="{% if article.title %}{{ article.title }}{% endif %}">
-    </div>
-       <div class="mb-3">
-        <label class="form-labal">Контент</label>
-           <textarea name="content" rows="6" class="form-control">{% if article %}{{ article.content }}{% endif %}</textarea>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Контент</label>
 
-    <button class="btn btn-dark">
-        Опубликовать
-    </button>
+            <textarea name="content" rows="6" class="form-control">{{ article.content|default:'' }}</textarea>
+        </div>
 
+        <button type="submit" class="btn btn-dark">Опубликовать</button>
     </form>
 {% endblock %}

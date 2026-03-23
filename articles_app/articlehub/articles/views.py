@@ -1,32 +1,52 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Article, Author
+from .forms import DemoForm, ArticleModelForm
+
+def add_article(request):
+    if request.method == 'POST':
+        form = ArticleModelForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('article_list')
+
+    form = ArticleModelForm()
+    return render(request, 'articles/demo.html', {'form': form})
+
+
+
+def demo_form_view(request):
+    form = DemoForm()
+    return render(request, 'articles/demo.html', context={'form': form})
+
 
 def article_create(request):
     authors = Author.objects.all()
-    context = {'authors': authors}
 
     if request.method == 'POST':
         title = request.POST.get('title')
         content = request.POST.get('content')
         author_id = request.POST.get('author')
+        slug = request.POST.get('slug')  # <-- ДОБАВЬ ЭТО
 
-
-        if not title or not content or not author_id:
-            return render(request, 'articles/article_create.html', context = {
-                'error':'ALL fields must be filled!',
+        # Проверяем все поля, включая slug
+        if not title or not content or not author_id or not slug:
+            return render(request, 'articles/article_create.html', context={
+                'error': 'Все поля, включая Slug, должны быть заполнены!',
                 'authors': authors,
             })
 
-        # Создаем статью
+        # Создаем статью с полем slug
         Article.objects.create(
             title=title,
             content=content,
-            author_id=author_id
+            author_id=author_id,
+            slug=slug  # <-- И ЭТО
         )
 
         return redirect('article_list')
 
-    return render(request, 'articles/article_create.html', context = {'authors' : authors})
+    return render(request, 'articles/article_create.html', context={'authors': authors})
 
 def article_list(request):
     articles = Article.objects.all()

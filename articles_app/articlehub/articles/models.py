@@ -14,7 +14,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     isPublished = models.BooleanField(default=False)
     author = models.ForeignKey(Author, on_delete= models.CASCADE, related_name='articles' )
-
+    slug = models.SlugField(max_length=200, unique=True)
 
 
 
