@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import Select, SelectMultiple
+
 from .models import Author, Article
 
 
@@ -7,11 +9,19 @@ class ArticleModelForm(forms.ModelForm):
         model = Article
         fields = '__all__'
 
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
+            'author': forms.Select(attrs={'class': 'form-control'}),
+            'categories': SelectMultiple(attrs={'class': 'form-select'}),
+
+        }
+
 class ValidationDemoForm(forms.Form):
     title = forms.CharField(label='title', max_length=100)
     content = forms.CharField(label='content', widget=forms.Textarea)
     is_published = forms.BooleanField(label='is_published', required=False)
-    author = forms.ModelChoiceField(label='author', queryset=Author.objects.all(), required=False)
+    author = Select(attrs={'class': 'form-control'})
     rating = forms.IntegerField(label='rating', min_value=1, max_value=5)
     publish_at = forms.DateField(label='publish_at', required=False)
 
@@ -30,8 +40,8 @@ class DemoForm(forms.Form):
     choice_field = forms.ChoiceField(label='choice_field', required=False, choices=[('red','Красный')])
     multiple_ch_field = forms.MultipleChoiceField(label='multiple_ch_field', required=False, choices=[('red', 'Красный'), ('blue', 'синий'),('green','зеленый')])
 
-    author_field = forms.ModelChoiceField(label='author_field', queryset=Author.objects.all(), required=False)
-    categories_field = forms.ModelMultipleChoiceField(label='categories_field', queryset=Author.objects.all(), required=False)
+    author_field = forms.Select(attrs={'class': 'form-control'})
+    categories_field = Select(attrs={'class': 'form-control'})
     date_field = forms.DateField(label='date_field', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     date_time_field = forms.TimeField(label='date_time_field', required=False, widget=forms.TimeInput(attrs={'type': 'datetime-local'}))
     hidden_field = forms.CharField(label='hidden_field', required=False)

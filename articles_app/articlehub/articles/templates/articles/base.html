@@ -26,10 +26,26 @@
     <nav class="navbar navbar-light border-bottom mb-4">
         <div class="container content">
             <a href="{% url 'article_list' %}" class="navbar-brand">Artclehub</a>
-    <a class="btn btn-dark" href="{% url 'article_create' %}">
-        Создать статью
-    </a>
-    </div>
+        <a class="btn btn-dark" href="{% url 'article_create' %}">
+            Создать статью
+                </a>
+            {% if user.is_authenticated %}
+                Привет, {{ user.username }}
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="btn btn-dark" type="submit">
+                    Выйти
+                </button>
+            </form>
+                {% else %}
+                        <a class="btn btn-dark" href="{% url 'login' %}">
+                             войти в систему
+                        </a>
+                        <a class="btn btn-dark" href="{% url 'register' %}">
+                            Регистрация
+                        </a>
+            {% endif %}
+        </div>
     </nav>
     <main class="container content">
     {% block content %}{% endblock %}
