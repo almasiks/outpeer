@@ -1,20 +1,26 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-4">
     <h2>Создать новый пост</h2>
-    <form method="POST">
+
+    <form method="post" enctype="multipart/form-data" class="mt-3">
         {% csrf_token %}
-        <h3>Create new post</h3>
-        <textarea name="text" rows="4" cols="50" placeholder="What do you think about it?"></textarea>
-        <button type="submit">Publish</button>
+
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+
         <div class="mb-3">
-            <label class="form-label">Заголовок</label>
-            <input type="text" name="title" class="form-control" required>
+            {{ form.as_p }}
         </div>
-        <div class="mb-3">
-            <label class="form-label">Текст поста</label>
-            <textarea name="text" class="form-control" rows="5" required></textarea>
-        </div>
+
         <button type="submit" class="btn btn-primary">Опубликовать</button>
+        <a href="{% url 'post_list' %}" class="btn btn-secondary">Отмена</a>
     </form>
+</div>
 {% endblock %}

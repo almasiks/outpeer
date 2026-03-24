@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from .forms import PostForm, CommentForm
 
 
 
@@ -72,12 +73,15 @@ def delete_post(request, post_id):
 
 def post_create(request):
     if request.method == 'POST':
-        text = request.POST.get('text')
+        form = PostForm(request.POST, request.FILES)
 
-        if not text:
-            return HttpResponse(f'Post cannot be empty', status=400)
+        if form.is_valid():
+            post = form.save()
 
-        new_post = 99
+            return redirect('post_detail', pk=post.pk)
 
-        return redirect(f'post_detail', post_id=new_post)
-    return render(request, 'posts/create_post.html')
+
+    else:
+        form = PostForm()
+
+    return render(request, 'posts/create_post.html', {'form': form})
