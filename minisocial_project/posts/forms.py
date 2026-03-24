@@ -6,18 +6,15 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('title', 'content')
-
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Заголовок'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'О чем думаете?'}),
         }
+
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ('author', 'content', 'post')
+        fields = ('text',)
         widgets = {
-            'author': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
-            'post': forms.Textarea(attrs={'class': 'form-control'}),
-
+            'text': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Напишите комментарий...'}),
         }
