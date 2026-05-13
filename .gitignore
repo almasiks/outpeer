@@ -1,0 +1,17 @@
+# Angular
+front/node_modules/
+front/.angular/
+front/dist/
+
+# Python / Django
+__pycache__/
+*.pyc
+db.sqlite3
+back/venv/
+.env
+
+# IDE
+.cursor/
+.vscode/
+.idea/
+*.log

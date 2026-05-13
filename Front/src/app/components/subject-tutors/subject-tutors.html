@@ -1,0 +1,100 @@
+<section class="page">
+  <app-header></app-header>
+
+  <div class="content-wrap">
+    <nav class="breadcrumbs">
+      <a routerLink="/">Главная</a>
+      <span class="sep">›</span>
+      <span>Репетиторы онлайн</span>
+      <span class="sep">›</span>
+      <span class="current">{{ subjectName || 'Предмет' }}</span>
+    </nav>
+
+    <h1 class="page-title">Тьюторы по предмету: <span>{{ subjectName }}</span></h1>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h3>Фильтры</h3>
+
+        <div class="filter-group">
+          <label>Сортировка</label>
+          <select [(ngModel)]="sortBy" (change)="applyFilters()" class="filter-select">
+            <option value="rating">По рейтингу</option>
+            <option value="name">По имени</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Минимальный рейтинг</label>
+          <div class="format-options">
+            @for (opt of ratingOptions; track opt.value) {
+              <button [class.active]="minRating === opt.value" (click)="minRating = opt.value; applyFilters()">
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Курс тьютора</label>
+          <div class="format-options">
+            @for (opt of courseOptions; track opt.value) {
+              <button [class.active]="selectedCourse === opt.value" (click)="selectedCourse = opt.value; applyFilters()">
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Цена (₸/час)</label>
+          <div class="price-row">
+            <input type="number" [(ngModel)]="minPrice" placeholder="от" (change)="applyFilters()" />
+            <input type="number" [(ngModel)]="maxPrice" placeholder="до" (change)="applyFilters()" />
+          </div>
+        </div>
+      </aside>
+
+      <main class="tutor-list">
+        <p class="result-count">Найдено: {{ filtered.length }} тьюторов</p>
+
+        @for (tutor of filtered; track tutor.id) {
+          <article class="tutor-card">
+            <div class="card-avatar">{{ tutor.user.username.charAt(0).toUpperCase() }}</div>
+
+            <div class="card-body">
+              <div class="card-header">
+                <div>
+                  <h2>{{ tutor.user.username }}</h2>
+                  <p class="subject-tag">{{ tutor.subject?.name || subjectName }}</p>
+                </div>
+                <div class="card-price">
+                  <span class="price-value">{{ tutor.hourly_rate }} ₸</span>
+                  <span class="price-label">/ час</span>
+                </div>
+              </div>
+
+              <div class="stars">
+                @for (filled of getStars(tutor.rating); track $index) {
+                  <span class="star" [class.filled]="filled">★</span>
+                }
+                <span class="score">{{ tutor.rating }}</span>
+              </div>
+
+              <p class="bio">{{ tutor.bio || 'Готов помочь разобраться с предметом. Опыт — ' + tutor.experience_years + ' лет.' }}</p>
+
+              <div class="card-footer">
+                <span class="exp-badge">Опыт: {{ tutor.experience_years }} лет</span>
+                <button class="contact-btn" (click)="goToTutor(tutor.id)">Связаться</button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <p class="state-msg">Данные загружаются или не найдены</p>
+        }
+      </main>
+    </div>
+  </div>
+
+  <app-footer></app-footer>
+</section>

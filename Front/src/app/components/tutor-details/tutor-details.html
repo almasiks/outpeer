@@ -1,0 +1,142 @@
+<div class="page">
+  <app-header></app-header>
+
+  <div class="content">
+    <a class="back-link" routerLink="/">← Все тьюторы</a>
+
+    @if (tutorNotFound) {
+      <p class="state-msg">Тьютор не найден или сервер недоступен. Проверьте консоль (F12).</p>
+    } @else if (!tutor) {
+      <p class="state-msg">Загрузка данных тьютора...</p>
+    } @else {
+      <div class="layout">
+
+        <!-- ===== LEFT SIDEBAR ===== -->
+        <aside class="sidebar">
+          <div class="avatar">{{ tutor.user.username.charAt(0).toUpperCase() }}</div>
+          <h1 class="tutor-name">{{ tutor.user.username }}</h1>
+
+          @if (tutor.subject) {
+            <span class="subject-badge">{{ tutor.subject.name }}</span>
+          }
+
+          <div class="rating-row">
+            <div class="stars-display">
+              @for (star of stars; track star) {
+                <span class="star" [class.filled]="star <= roundedRating">★</span>
+              }
+            </div>
+            <span class="rating-value">{{ tutor.rating || '0.0' }}</span>
+          </div>
+
+          <div class="price-block">
+            <span class="price-num">{{ tutor.hourly_rate }}</span>
+            <span class="price-cur">₸</span>
+            <span class="price-per">/ час</span>
+          </div>
+
+          @if (bookingNotice) {
+            <div class="booking-notice" [class.notice-success]="bookingSuccess" [class.notice-error]="!bookingSuccess">
+              {{ bookingNotice }}
+            </div>
+          }
+          <button class="book-btn" type="button" [disabled]="isSubmitting || bookingSuccess" (click)="bookLesson()">
+            {{ isSubmitting ? 'Оформление...' : bookingSuccess ? 'Забронировано ✓' : 'Забронировать занятие' }}
+          </button>
+
+          <div class="divider"></div>
+
+          <div class="rate-block">
+            <p class="rate-label">Поставить оценку</p>
+            <div class="stars-input">
+              @for (star of stars; track star) {
+                <button class="star-btn" type="button"
+                  [class.active]="star <= (hoverScore || selectedScore)"
+                  (mouseenter)="hoverScore = star"
+                  (mouseleave)="hoverScore = 0"
+                  (click)="rateTutor(star)">★</button>
+              }
+            </div>
+            @if (ratingNotice) {
+              <p class="rate-notice">{{ ratingNotice }}</p>
+            }
+          </div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main">
+
+          <section class="info-grid">
+            <div class="info-card">
+              <span class="info-icon">📚</span>
+              <div>
+                <p class="info-label">Предмет</p>
+                <p class="info-value">{{ tutor.subject?.name || 'Не указан' }}</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <span class="info-icon">🎓</span>
+              <div>
+                <p class="info-label">Курс</p>
+                <p class="info-value">{{ tutor.experience_years }}-й курс</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <span class="info-icon">⭐</span>
+              <div>
+                <p class="info-label">Рейтинг</p>
+                <p class="info-value">{{ tutor.rating || '—' }} / 5.0</p>
+              </div>
+            </div>
+            <div class="info-card">
+              <span class="info-icon">💰</span>
+              <div>
+                <p class="info-label">Стоимость</p>
+                <p class="info-value">{{ tutor.hourly_rate }} ₸/час</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="bio-section">
+            <h2>О себе</h2>
+            @if (tutor.bio) {
+              <p class="bio-text">{{ tutor.bio }}</p>
+            } @else {
+              <p class="bio-empty">Тьютор пока не заполнил раздел «О себе».</p>
+            }
+          </section>
+
+          <section class="reviews-section">
+            <h2>Отзывы студентов <span class="review-count">{{ reviews.length }}</span></h2>
+            <div class="reviews-list">
+              @for (review of reviews; track review.id) {
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="review-avatar">{{ review.student_username.charAt(0).toUpperCase() }}</div>
+                    <div class="review-meta">
+                      <p class="review-author">{{ review.student_username }}</p>
+                      <div class="review-stars">
+                        @for (star of stars; track star) {
+                          <span class="star" [class.filled]="star <= review.rating">★</span>
+                        }
+                      </div>
+                    </div>
+                    <span class="review-date">{{ review.created_at | date:'dd.MM.yyyy' }}</span>
+                  </div>
+                  @if (review.comment) {
+                    <p class="review-text">{{ review.comment }}</p>
+                  }
+                </article>
+              } @empty {
+                <p class="no-reviews">Отзывов пока нет. Запишитесь на занятие и оставьте первый!</p>
+              }
+            </div>
+          </section>
+
+        </main>
+      </div>
+    }
+  </div>
+
+  <app-footer></app-footer>
+</div>

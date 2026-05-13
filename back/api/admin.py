@@ -1,0 +1,34 @@
+from django.contrib import admin
+from .models import Subject, TutorProfile, LessonSlot, Booking, Review
+
+
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
+
+
+@admin.register(TutorProfile)
+class TutorProfileAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'subject', 'experience_years', 'hourly_rate', 'rating']
+    list_filter = ['subject']
+    search_fields = ['user__username']
+
+
+@admin.register(LessonSlot)
+class LessonSlotAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tutor', 'start_time', 'end_time', 'is_booked']
+    list_filter = ['is_booked']
+
+
+@admin.register(Booking)
+class BookingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'student', 'tutor', 'date', 'status']
+    list_filter = ['status']
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['id', 'student', 'tutor', 'rating', 'created_at']
+    list_filter = ['rating']
+    search_fields = ['student__username', 'tutor__user__username']

@@ -1,0 +1,82 @@
+<section class="page">
+  <app-header></app-header>
+
+  @if (toast) {
+    <div class="toast" [class.toast-success]="toast.success" [class.toast-error]="!toast.success">
+      {{ toast.message }}
+    </div>
+  }
+
+  <div class="wrap">
+    <div class="page-header">
+      <h1>Личный кабинет</h1>
+      <button class="logout-btn" (click)="logout()">Выйти</button>
+    </div>
+
+    <section class="bookings-section">
+      <h2>Мои бронирования</h2>
+
+      <div class="bookings-grid">
+        @for (b of bookings; track b.id) {
+          <article class="booking-card">
+            <div class="booking-avatar">{{ b.tutor_name.charAt(0).toUpperCase() }}</div>
+            <div class="booking-info">
+              <h3>{{ b.tutor_name }}</h3>
+              <p class="subject">{{ b.tutor_subject || 'Предмет не указан' }}</p>
+              <p class="datetime">📅 {{ b.date | date: 'dd.MM.yyyy' }} &nbsp; 🕐 {{ b.date | date: 'HH:mm' }}</p>
+              @if (b.tutor_hourly_rate) {
+                <p class="rate">{{ b.tutor_hourly_rate }} ₸/час</p>
+              }
+            </div>
+            <div class="card-actions">
+              <span class="status-badge" [class]="'status-' + b.status">
+                {{ statusLabels[b.status] ?? b.status }}
+              </span>
+              @if (b.status !== 'cancelled') {
+                <button class="cancel-btn" type="button" (click)="openCancelModal(b)">
+                  Отменить
+                </button>
+              }
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <span class="empty-icon">📅</span>
+            <p>У вас пока нет активных бронирований</p>
+            <a href="/" class="find-btn">Найти тьютора</a>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <app-footer></app-footer>
+</section>
+
+@if (cancelModal) {
+  <div class="modal-backdrop" (click)="closeCancelModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Отмена бронирования</h2>
+      <p class="modal-sub">Тьютор: <strong>{{ cancelModal.tutorName }}</strong></p>
+
+      <label class="reason-label">Причина отмены <span class="req">*</span></label>
+      <div class="reason-list">
+        @for (reason of cancelReasons; track reason) {
+          <label class="reason-option" [class.selected]="selectedReason === reason">
+            <input type="radio" name="cancel-reason" [value]="reason" [(ngModel)]="selectedReason" />
+            {{ reason }}
+          </label>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-back" type="button" (click)="closeCancelModal()">Назад</button>
+        <button class="btn-confirm" type="button"
+          [disabled]="!selectedReason || isCancelling"
+          (click)="confirmCancel()">
+          {{ isCancelling ? 'Отмена...' : 'Подтвердить отмену' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

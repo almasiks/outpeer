@@ -1,0 +1,67 @@
+<section class="page">
+  <app-header></app-header>
+
+  @if (toast) {
+    <div class="toast" [class.toast-success]="toast.success" [class.toast-error]="!toast.success">
+      {{ toast.message }}
+    </div>
+  }
+
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Нужен тьютор? ищи с KBTU Tutor!</h1>
+      <div class="search-panel">
+        <input [(ngModel)]="searchQuery" type="text" placeholder="Какой предмет изучаем?" />
+        <button type="button" class="search-btn" (click)="applyFilter()">Искать</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="subjects-panel">
+    @for (item of subjectItems; track item.id) {
+      <button type="button" class="subject-chip" [class.active]="selectedSubject === item.name" (click)="goToSubject(item)">
+        <span class="chip-icon" [attr.title]="item.name">{{ item.icon }}</span>
+        <span>{{ item.name }}</span>
+      </button>
+    }
+  </section>
+
+  <section class="list-head">
+    <h2>Тьюторы</h2>
+    <p>Найдено: {{ filteredTutors.length }}</p>
+  </section>
+
+  @if (!tutorsLoaded) {
+    <p class="empty-text">Загрузка тьюторов...</p>
+  } @else if (filteredTutors.length === 0) {
+    <p class="empty-text">По вашему запросу ничего не найдено</p>
+  } @else {
+    <section class="cards">
+      @for (tutor of filteredTutors; track tutor.id) {
+        <article class="tutor-card">
+          <div class="tutor-top">
+            <div class="avatar">{{ tutor.user.username.charAt(0) }}</div>
+            <div>
+              <h3>{{ tutor.user.username }}</h3>
+              <p class="subject">{{ tutor.subject?.name || 'Без предмета' }}</p>
+              <p class="meta">Студент KBTU, {{ tutor.experience_years }} курс</p>
+            </div>
+          </div>
+
+          <div class="stars">
+            @for (filled of getStars(tutor.rating); track $index; let i = $index) {
+              <button type="button" class="star-btn" [class.filled]="filled" (click)="rateTutor(tutor.id, i + 1)">★</button>
+            }
+            <span class="score">{{ tutor.rating }}</span>
+          </div>
+
+          <button class="book-btn" type="button" (click)="selectTutor(tutor.id)">
+            Подробнее
+          </button>
+        </article>
+      }
+    </section>
+  }
+
+  <app-footer></app-footer>
+</section>
