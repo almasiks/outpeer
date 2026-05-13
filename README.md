@@ -5,15 +5,7 @@
 **KBTU Tutor** — веб-приложение для студентов КБТУ, которое помогает найти тьюторов среди сокурсников. Платформа позволяет бронировать время для консультаций по сложным предметам, помогать с лабораторными работами и готовиться к экзаменам.
 
 ---
-
-## Состав группы (Group: Wednesday 12:00–14:00)
-
-| Имя | Роль |
-|-----|------|
-| **Magrupov Almas** | Frontend Lead (Angular) |
-| **Alikhan Turugeldiev** | Backend Lead (Django & API Architecture) |
-| **Yertayev Daniyal** | Integration & Auth Specialist (Fullstack Support) |
-
+Author: Magrupov Almas
 ---
 
 ## Технологический стек
